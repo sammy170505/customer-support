@@ -12,17 +12,16 @@ export default function Home() {
 
   const [message, setMessage] = useState ('')
 
-  const sendMessages = async() =>{
+  const sendMessage = async() =>{
     setMessage ('')
     setMessages ((messages) => [
       ...messages,
       {role: "user", content: message},
       {role: 'assistant', content: ''},
     ])
-    const response = fetch ('/api/chat',{
+    const response = fetch ('/app/api/chat/',{
       method: 'POST',
-      headers: { 'Content-Type': 'application/json',
-    },
+      headers: { 'Content-Type': 'application/json'},
   body: JSON.stringify ([...messages, {role : 'user', content: message}]),
   }).then (async (res) => {
     const reader = res.body.getReader()
@@ -104,7 +103,7 @@ export default function Home() {
           fullwidth
           value = {message}
           onChange = {(e) => setMessage (e.target.value)}/>
-          <Button variant = "contained" onClick={sendMessages}>
+          <Button variant = "contained" onClick={sendMessage}>
             send
           </Button>
         </Stack>
