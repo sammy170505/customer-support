@@ -1,27 +1,32 @@
-'use client'
-import Image from "next/image";
+"use client"
+
 import { useState } from "react";
 import { Box, Stack, Button, TextField } from "@mui/material";
 import { Assistant } from "next/font/google";
+//require('dotenv').config({ path: '.env.local' });
 
 export default function Home() {
   const [messages, setMessages] = useState([{
     role : 'assistant',
-    content : 'Hi! How can I help you today?',
+    content : `Hi! How can I help you today?`,
   }])
 
+  // message typed in text box
   const [message, setMessage] = useState ('')
+
 
   const sendMessage = async() =>{
     setMessage ('')
     setMessages ((messages) => [
       ...messages,
       {role: "user", content: message},
-      {role: 'assistant', content: ''},
+      {role: "assistant", content: ''},
     ])
-    const response = fetch ('/app/api/chat/',{
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
+    const response = await fetch ('/api/chat', {
+      method: "POST",
+      headers:{ 
+        'Content-Type': 'application/json',
+      },
   body: JSON.stringify ([...messages, {role : 'user', content: message}]),
   }).then (async (res) => {
     const reader = res.body.getReader()
@@ -48,7 +53,6 @@ export default function Home() {
       return reader.read().then(processText)
     })
   })
-
   }
   return(
     <Box 

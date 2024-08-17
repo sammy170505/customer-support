@@ -34,13 +34,15 @@ Your goal is to enhance the user experience by providing timely and accurate sup
 
 export async function POST(req){
     const openai = new OpenAI();
+    //get json from request
     const data = await req.json()
 
+    //chat completion from OpenAI
     const completion = await openai.chat.completions.create({
         messages :[
             {
             role:'system',
-            content: systemPrompt
+            content: systemPrompt,
             },
             ...data, //... is a spread operator to get the rest of the data
         ],
@@ -49,10 +51,15 @@ export async function POST(req){
 
     })
 
+    //Stream response to output messages
     const stream = new ReadableStream({
+
         async start (controller) {
+
+            //encodes in bytes?
             const encoder = new TextEncoder();
             try{
+                //waits for chunk of every chunk and extract the content from each chunk
                 for await (const chunk of completion) {
                     const content = chunk.choices[0]?.delta?.content
                     if(content){
